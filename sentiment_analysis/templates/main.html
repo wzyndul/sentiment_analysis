@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Main Page
+{% endblock %}
+
+{% block header %}
+    Welcome to Sentiment Analysis
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Twitter Posts</h5>
+                <p class="card-text">Enter a Twitter username to analyze their posts.</p>
+                <form method="post" action="{% url 'analysis_view' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="twitter_username">Twitter Username:</label>
+                        <input type="text" class="form-control" id="twitter_username" name="twitter_username" placeholder="Enter Twitter Username">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Analyze</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">YouTube Comments</h5>
+                <p class="card-text">Enter a YouTube video link to analyze comments.</p>
+                <form method="post" action="{% url 'analysis_view' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="youtube_link">YouTube Video Link:</label>
+                        <input type="text" class="form-control" id="youtube_link" name="youtube_link" placeholder="Enter YouTube Video Link">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Analyze</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
