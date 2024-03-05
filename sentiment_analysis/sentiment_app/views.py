@@ -8,16 +8,18 @@ def main_view(request):
 def analysis_view(request):
     platform = None
     if request.method == 'POST':
-        if 'x_username' in request.POST:
-            x_username = request.POST.get('x_username')
-            platform = 'X'
+        if 'twitter_username' in request.POST:
+            twitter_username = request.POST.get('twitter_username')
+            platform = 'Twitter'
         elif 'youtube_link' in request.POST:
             youtube_link = request.POST.get('youtube_link')
-            platform = 'Youtube'
+            print(youtube_link)
+            platform = 'YouTube'
         context = {
             'platform': platform,
-            'x_username': x_username if platform == 'X' else None,
-            'youtube_link': youtube_link if platform == 'Youtube' else None,
+            'username': twitter_username if platform == 'Twitter' else None,
+            'link': youtube_link if platform == 'YouTube' else None,
         }
+        print(context)
 
-    return render(request, 'analysis.html', context)
+        return render(request, 'analysis.html', context)
