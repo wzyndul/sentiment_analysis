@@ -1,0 +1,36 @@
+<!-- templates/base.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Web App{% endblock %}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 70px;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="navbar-brand" href="{% url 'main_view' %}">Home</a>
+        </li>
+    </ul>
+</nav>
+
+<header class="mt-4 text-center">
+    <h1 class="mx-auto">{% block header %}Web App{% endblock %}</h1>
+</header>
+
+<main class="container mt-4">
+    {% block content %}{% endblock %}
+</main>
+
+</body>
+</html>

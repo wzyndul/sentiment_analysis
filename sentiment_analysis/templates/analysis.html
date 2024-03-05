@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Analysis Results
+{% endblock %}
+
+{% block header %}
+    Analysis Results
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Sentiment Analysis Results</h5>
+                <p class="card-text">Here are the results of the sentiment analysis:</p>
+                <ul>
+                    <li>Platform: {{ platform }}</li>
+                    {% if platform == 'X' %}
+                        <li>Username: {{ username }}</li>
+                    {% elif platform == 'YouTube' %}
+                        <li>Link: {{ link }}</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
