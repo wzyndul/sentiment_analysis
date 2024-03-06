@@ -23,7 +23,7 @@ def get_video_comments(video_id, youtube):
         nextPageToken = response.get('nextPageToken')
         if not nextPageToken:
             break
-
+    print(len(comments))
     return comments
 
 
@@ -38,4 +38,3 @@ def get_video_info(youtube_url):
         print(comment)
 
 
-get_video_info('https://www.youtube.com/watch?v=1tZmdOkI1UQ')
