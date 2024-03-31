@@ -16,6 +16,8 @@ from sklearn.model_selection import train_test_split
 # hhttps://www.kaggle.com/datasets/yasserh/twitter-tweets-sentiment-dataset
 # Positive, Negative and Neutral.
 
+# https://www.kaggle.com/datasets/imrandude/twitter-sentiment-analysis
+
 
 def preprocess_text(text):
     tokens = tokenizer(text)
@@ -27,39 +29,21 @@ def preprocess_text(text):
     return tokens
 
 
-df = pd.read_csv('Tweets.csv')
-df['text'] = df['text'].apply(lambda x: " ".join(x.lower() for x in x.split()))
 
-# # df = df.dropna().reset_index(drop=True)
-# # print this lines where is nan value
-# print(df[df.isna().any(axis=1)])
-# print(df.isna().sum())
+df = pd.read_csv('data.csv', encoding='latin1')
 
 
-x = df['text']
-y = df['sentiment']
+x = df['SentimentText']
+y = df['Sentiment']
+
 x_train, x_test, y_train, y_test = train_test_split(x, y, stratify=y)
 
-# pd.set_option('display.max_rows', None)
-
-
-y_train = y_train.map({'positive': 0, 'negative': 1, 'neutral': 2})
-y_test = y_test.map({'positive': 0, 'negative': 1, 'neutral': 2})
-
-# droput neutral values from dataset
-x_train = x_train[y_train != 2]
-y_train = y_train[y_train != 2]
-x_test = x_test[y_test != 2]
-y_test = y_test[y_test != 2]
 
 
 tokenizer = get_tokenizer("basic_english")
 
 x_train_preprocessed = [preprocess_text(text) for text in x_train]
 x_test_preprocessed = [preprocess_text(text) for text in x_test]
-
-# vocab = Counter([token for tokens in x_train_preprocessed for token in tokens])
-# vocab_size = len(vocab)
 
 
 
@@ -92,7 +76,7 @@ x_test_indices = [[word_to_idx.get(token, 0) for token in tokens] for tokens in 
 # print(f"Mean length: {mean_length}")
 # print(f"Median length: {median_length}")
 
-max_seq_length = 10
+max_seq_length = 15
 x_train_padded = [
     seq[:max_seq_length] + [0] * (max_seq_length - len(seq)) if len(seq) < max_seq_length else seq[:max_seq_length] for
     seq in x_train_indices]
@@ -128,17 +112,17 @@ class SentimentRNN(nn.Module):
 
 
 input_size = vocab_size + 1  # Add 1 for padding token
-hidden_size = 128
+hidden_size = 12
 output_size = 2  # as there are 3 classes
 
 model = SentimentRNN(input_size, hidden_size, output_size)
 
 criterion = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.0005, weight_decay=1e-5)
 
 losses_train = []
 accuracy_train = []
-num_epochs = 5
+num_epochs = 20
 for epoch in range(num_epochs):
     model.train()
     running_loss = 0.0
