@@ -53,12 +53,29 @@ tokenizer = get_tokenizer("basic_english")
 x_train_preprocessed = [preprocess_text(text) for text in x_train]
 x_test_preprocessed = [preprocess_text(text) for text in x_test]
 
-vocab = Counter([token for tokens in x_train_preprocessed for token in tokens])
-vocab_size = len(vocab)
-word_to_idx = {word: idx for idx, (word, _) in enumerate(vocab.most_common(), 1)}
+# vocab = Counter([token for tokens in x_train_preprocessed for token in tokens])
+# vocab_size = len(vocab)
 
-x_train_indices = [[word_to_idx[token] for token in tokens] for tokens in x_train_preprocessed]
+
+
+N = 10000
+vocab = Counter([token for tokens in x_train_preprocessed for token in tokens])
+vocab = Counter(dict(vocab.most_common(N)))
+vocab_size = len(vocab) + 1
+
+# Build the word_to_idx dictionary
+word_to_idx = {word: idx for idx, (word, _) in enumerate(vocab.items(), 1)}
+word_to_idx["<UNK>"] = 0  # Add the <UNK> token
+
+x_train_indices = [[word_to_idx.get(token, 0) for token in tokens] for tokens in x_train_preprocessed]
 x_test_indices = [[word_to_idx.get(token, 0) for token in tokens] for tokens in x_test_preprocessed]
+
+
+
+# word_to_idx = {word: idx for idx, (word, _) in enumerate(vocab.most_common(), 1)}
+
+# x_train_indices = [[word_to_idx[token] for token in tokens] for tokens in x_train_preprocessed]
+# x_test_indices = [[word_to_idx.get(token, 0) for token in tokens] for tokens in x_test_preprocessed]
 
 # seq_len = [len(i) for i in x_train_indices]
 #
@@ -113,7 +130,7 @@ model = SentimentRNN(input_size, hidden_size, output_size)
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
-num_epochs = 10
+num_epochs = 15
 for epoch in range(num_epochs):
     model.train()
     running_loss = 0.0
