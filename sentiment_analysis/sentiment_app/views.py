@@ -15,13 +15,15 @@ def analysis_view(request):
         if video_url is None or not video_url.startswith('https://www.youtube.com/watch?v='):
             return render(request, 'main.html')
         else:
-            comments = get_comments(video_url)
+            comments, channel_name = get_comments(video_url)
 
             positive = 0
-            for comment in comments:
+            for comment_id, comment_data in comments.items():
+                comment = comment_data['comment']
                 result = predict_sentiment(comment)
                 if result == 1:
                     positive += 1
+
             negative = len(comments) - positive
             num_comments = len(comments)
             rating = f"{positive / len(comments) * 100} %"
