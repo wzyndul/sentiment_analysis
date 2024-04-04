@@ -1,6 +1,8 @@
+from django.contrib import messages
 from django.shortcuts import render
 
-from sentiment_app.youtube_handler import get_video_info
+from sentiment_app.predict import predict_sentiment
+from sentiment_app.youtube_handler import get_comments
 
 
 def main_view(request):
@@ -8,20 +10,20 @@ def main_view(request):
 
 
 def analysis_view(request):
-    platform = None
     if request.method == 'POST':
-        if 'twitter_username' in request.POST:
-            twitter_username = request.POST.get('twitter_username')
-            platform = 'Twitter'
-        elif 'youtube_link' in request.POST:
-            youtube_link = request.POST.get('youtube_link')
-            get_video_info(youtube_link)
-            platform = 'YouTube'
-        context = {
-            'platform': platform,
-            'username': twitter_username if platform == 'Twitter' else None,
-            'link': youtube_link if platform == 'YouTube' else None,
-        }
+        video_url = request.POST.get('youtube_url')
+        if video_url is None or not video_url.startswith('https://www.youtube.com/watch?v='):
+            return render(request, 'main.html')
+        else:
+            comments = get_comments(video_url)
 
+            positive = 0
+            for comment in comments:
+                result = predict_sentiment(comment)
+                if result == 1:
+                    positive += 1
+            negative = len(comments) - positive
+            num_comments = len(comments)
+            rating = f"{positive / len(comments) * 100} %"
 
-        return render(request, 'analysis.html', context)
+            return render(request, 'analysis.html', context={'url': video_url, 'num_comments': num_comments, 'positive': positive, 'negative': negative, 'rating': rating})
