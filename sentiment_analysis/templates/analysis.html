@@ -17,11 +17,13 @@
                     <p class="card-text">Here are the results of the sentiment analysis:</p>
                     <ul class="list-unstyled">
                         <li>URL: {{ url }}</li>
-                        <li>Positive: {{ positive }}</li>
-                        <li>Negative: {{ negative }}</li>
-                        <li>Number of comments: {{ num_comments }}</li>
-                        <li>Rating: {{ rating }}</li>
+                        <li>Positive: {{ stats.positive }}</li>
+                        <li>Negative: {{ stats.negative }}</li>
+                        <li>Number of comments: {{ stats.num_comments }}</li>
+                        <li>Rating: {{ stats.rating }}</li>
                     </ul>
+                    <img src="data:image/png;base64,{{ plot }}" alt="plot"
+                         style="width: 640px; height: 480px;">
                 </div>
             </div>
         </div>
