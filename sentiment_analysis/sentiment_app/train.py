@@ -13,6 +13,8 @@ import string
 from torch.utils.data import TensorDataset, DataLoader
 from sklearn.model_selection import train_test_split
 
+from sentiment_app.sentiment_rnn import SentimentRNN
+
 
 # hhttps://www.kaggle.com/datasets/yasserh/twitter-tweets-sentiment-dataset
 # Positive, Negative and Neutral.
@@ -27,7 +29,7 @@ class SentimentAnalysis:
         self.train_loader = None
         self.test_loader = None
         self.word_to_idx = None
-        self.max_seq_length = 10
+        self.max_seq_length = None
 
     def preprocess_text(self, text):
         tokens = self.tokenizer(text)
@@ -60,7 +62,6 @@ class SentimentAnalysis:
         self.word_to_idx = {word: idx for idx, (word, _) in enumerate(vocab.items(), 1)}
         self.word_to_idx["<UNK>"] = 0  # Add the <UNK> token
 
-
         self.max_seq_length = 10
         x_train_indices = [[self.word_to_idx.get(token, 0) for token in tokens] for tokens in x_train_preprocessed]
         x_test_indices = [[self.word_to_idx.get(token, 0) for token in tokens] for tokens in x_test_preprocessed]
@@ -68,15 +69,14 @@ class SentimentAnalysis:
         x_test_padded = [seq[:self.max_seq_length] + [0] * (self.max_seq_length - len(seq)) if len(seq) < self.max_seq_length else seq[:self.max_seq_length] for seq in x_test_indices]
 
         # seq_len = [len(i) for i in x_train_indices]
-        #
+
         # max_length = max(seq_len)
         # mean_length = statistics.mean(seq_len)
         # median_length = statistics.median(seq_len)
-        #
+
         # print(f"Max length: {max_length}")
         # print(f"Mean length: {mean_length}")
         # print(f"Median length: {median_length}")
-
 
         x_train_tensor = torch.tensor(x_train_padded)
         x_test_tensor = torch.tensor(x_test_padded)
@@ -133,58 +133,14 @@ class SentimentAnalysis:
         with open(vocab_path, 'w') as f:
             json.dump(self.word_to_idx, f)
 
-    def load_model(self, model_path, vocab_path):
-        model_info = torch.load(model_path)
-        self.input_size = model_info['input_size']
-        self.hidden_size = model_info['hidden_size']
-        self.output_size = model_info['output_size']
-        self.model = SentimentRNN(self.input_size, self.hidden_size, self.output_size)
-        self.model.load_state_dict(model_info['state_dict'])
-        with open(vocab_path, 'r') as f:
-            self.word_to_idx = json.load(f)
-
-    def predict_sentiment(self, text):
-        self.model.eval()
-        with torch.no_grad():
-            preprocessed_text = self.preprocess_text(text)
-            print(preprocessed_text)
-            indexed = [self.word_to_idx.get(token, 0) for token in preprocessed_text]
-            if len(indexed) > self.max_seq_length:
-                indexed = indexed[:self.max_seq_length]
-            elif len(indexed) < self.max_seq_length:
-                indexed += [0] * (self.max_seq_length - len(indexed))
-            tensor = torch.LongTensor(indexed).unsqueeze(0)
-            prediction = self.model(tensor)
-            _, predicted = torch.max(prediction, 1)
-            return 'positive' if predicted.item() == 1 else 'negative'
-
-
-class SentimentRNN(nn.Module):
-    def __init__(self, input_size, hidden_size, output_size, dropout_prob=0.5):
-        super(SentimentRNN, self).__init__()
-        self.embedding = nn.Embedding(input_size, hidden_size)
-        self.rnn = nn.RNN(hidden_size, hidden_size, batch_first=True)
-        self.dropout = nn.Dropout(dropout_prob)
-        self.fc = nn.Linear(hidden_size, output_size)
-
-    def forward(self, x):
-        embedded = self.embedding(x)
-        output, _ = self.rnn(embedded)
-        output = self.dropout(output)
-        output = self.fc(output[:, -1, :])
-        return output
-
-
-
-# sa = SentimentAnalysis()
-# sa.load_data()
-# print("Data loaded")
-# sa.train_model()
-# sa.test_model()
-# sa.save_model('sentiment_model.pth', 'vocab.json')
 
 sa = SentimentAnalysis()
-sa.load_model('sentiment_model.pth', 'vocab.json')
+sa.load_data()
+sa.train_model()
+sa.test_model()
+sa.save_model('sentiment_model.pth', 'vocab.json')
+
+
 
 
 
