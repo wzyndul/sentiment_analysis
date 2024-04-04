@@ -9,8 +9,8 @@ from torchtext.data import get_tokenizer
 from sentiment_app.sentiment_rnn import SentimentRNN
 
 MAX_SEQ_LENGTH = 10
-MODEL_PATH = 'sentiment_model.pth'
-VOCAB_PATH = 'vocab.json'
+MODEL_PATH = 'sentiment_app/data/sentiment_model.pth'
+VOCAB_PATH = 'sentiment_app/data/vocab.json'
 
 model_info = torch.load(MODEL_PATH)
 input_size = model_info['input_size']
@@ -20,6 +20,8 @@ model = SentimentRNN(input_size, hidden_size, output_size)
 model.load_state_dict(model_info['state_dict'])
 with open(VOCAB_PATH, 'r') as f:
     word_to_idx = json.load(f)
+
+
 def preprocess_text(text):
     tokenizer = get_tokenizer("basic_english")
     tokens = tokenizer(text)
@@ -43,5 +45,4 @@ def predict_sentiment(text):
         tensor = torch.LongTensor(indexed).unsqueeze(0)
         prediction = model(tensor)
         _, predicted = torch.max(prediction, 1)
-        return 'positive' if predicted.item() == 1 else 'negative'
-
+        return 1 if predicted.item() == 1 else 0

@@ -42,7 +42,7 @@ class SentimentAnalysis:
 
     def load_data(self):
         # df = pd.read_csv('200k.csv', encoding='ISO-8859-1')
-        df = pd.read_csv('Tweets.csv')
+        df = pd.read_csv('data/Tweets.csv')
         df['text'] = df['text'].apply(lambda x: " ".join(x.lower() for x in x.split()))
         x = df['text']
         y = df['sentiment']
@@ -65,8 +65,10 @@ class SentimentAnalysis:
         self.max_seq_length = 10
         x_train_indices = [[self.word_to_idx.get(token, 0) for token in tokens] for tokens in x_train_preprocessed]
         x_test_indices = [[self.word_to_idx.get(token, 0) for token in tokens] for tokens in x_test_preprocessed]
-        x_train_padded = [seq[:self.max_seq_length] + [0] * (self.max_seq_length - len(seq)) if len(seq) < self.max_seq_length else seq[:self.max_seq_length] for seq in x_train_indices]
-        x_test_padded = [seq[:self.max_seq_length] + [0] * (self.max_seq_length - len(seq)) if len(seq) < self.max_seq_length else seq[:self.max_seq_length] for seq in x_test_indices]
+        x_train_padded = [seq[:self.max_seq_length] + [0] * (self.max_seq_length - len(seq)) if len(
+            seq) < self.max_seq_length else seq[:self.max_seq_length] for seq in x_train_indices]
+        x_test_padded = [seq[:self.max_seq_length] + [0] * (self.max_seq_length - len(seq)) if len(
+            seq) < self.max_seq_length else seq[:self.max_seq_length] for seq in x_test_indices]
 
         # seq_len = [len(i) for i in x_train_indices]
 
@@ -98,7 +100,6 @@ class SentimentAnalysis:
             correct_predictions = 0
             total_predictions = 0
             for inputs, labels in self.train_loader:
-
                 optimizer.zero_grad()
                 outputs = self.model(inputs)
                 _, predicted = torch.max(outputs, 1)
@@ -138,11 +139,4 @@ sa = SentimentAnalysis()
 sa.load_data()
 sa.train_model()
 sa.test_model()
-sa.save_model('sentiment_model.pth', 'vocab.json')
-
-
-
-
-
-
-
+# sa.save_model('sentiment_model.pth', 'vocab.json')

@@ -22,18 +22,18 @@ def get_video_comments(video_id, youtube):
         nextPageToken = response.get('nextPageToken')
         if not nextPageToken:
             break
-    print(len(comments))
     return comments
 
 
-def get_video_info(youtube_url):
+def get_comments(youtube_url):
     load_dotenv()
     api_key = os.getenv('YOUTUBE_API_KEY')
+    os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
     youtube = build('youtube', 'v3', developerKey=api_key)
-
     video_id = youtube_url.split('v=')[1]
+
     comments = get_video_comments(video_id, youtube)
-    for comment in comments:
-        print(comment)
+    return comments
+
 
 
