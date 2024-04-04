@@ -12,7 +12,6 @@ def get_video_comments(video_id, youtube):
             part="snippet",
             videoId=video_id,
             textFormat="plainText",
-            maxResults=100,  # Maximum number of comments per page
             pageToken=nextPageToken
         ).execute()
 
@@ -32,7 +31,7 @@ def get_video_info(youtube_url):
     api_key = os.getenv('YOUTUBE_API_KEY')
     youtube = build('youtube', 'v3', developerKey=api_key)
 
-    video_id = youtube_url.split('=')[-1]
+    video_id = youtube_url.split('v=')[1]
     comments = get_video_comments(video_id, youtube)
     for comment in comments:
         print(comment)
