@@ -5,7 +5,7 @@ from googleapiclient.discovery import build
 
 
 def get_video_comments(video_id, youtube):
-    video_data = {}
+    channel_data = {}
 
     video_response = youtube.videos().list(
         part="snippet",
@@ -22,12 +22,12 @@ def get_video_comments(video_id, youtube):
     ).execute()
     channel_picture_url = channel_response['items'][0]['snippet']['thumbnails']['default']['url']
 
-
-    video_data['channel_id'] = channel_id
-    video_data['channel_name'] = channel_name
-    video_data['published_time'] = published_time
-    video_data['vido_title'] = vido_title
-    video_data['channel_picture_url'] = channel_picture_url
+    channel_data['channel_id'] = channel_id
+    channel_data['channel_name'] = channel_name
+    channel_data['published_time'] = published_time
+    channel_data['vido_title'] = vido_title
+    channel_data['channel_picture_url'] = channel_picture_url
+    channel_data['video_id'] = video_id
 
     nextPageToken = None
     comments = {}
@@ -48,9 +48,7 @@ def get_video_comments(video_id, youtube):
         nextPageToken = response.get('nextPageToken')
         if not nextPageToken:
             break
-    return comments, video_data
-
-
+    return comments, channel_data
 
 
 def get_comments(youtube_url):
@@ -62,6 +60,3 @@ def get_comments(youtube_url):
 
     comments, channel_name = get_video_comments(video_id, youtube)
     return comments, channel_name
-
-
-
