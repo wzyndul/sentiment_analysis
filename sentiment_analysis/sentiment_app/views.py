@@ -39,7 +39,6 @@ def analysis_view(request):
                 sentiment = positive / all
                 sentiments_over_time[timestamp] = sentiment
 
-
             negative = len(comments) - positive
             num_comments = len(comments)
             rating = f"{positive / len(comments) * 100} %"
