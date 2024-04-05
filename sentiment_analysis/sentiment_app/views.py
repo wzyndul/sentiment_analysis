@@ -2,11 +2,15 @@ from collections import defaultdict
 from datetime import datetime
 import matplotlib.dates as mdates
 from django.contrib import messages
+from django.core.exceptions import ValidationError
+from django.http import HttpResponseBadRequest
 from django.shortcuts import render
 from matplotlib import pyplot as plt
 
-from sentiment_app.plot_handler import sentiment_over_time
+from sentiment_app.models import Video, Creator
+from sentiment_app.plot_handler import sentiment_plot
 from sentiment_app.predict import predict_sentiment
+from sentiment_app.youtube_data_processing import video_sentiment
 from sentiment_app.youtube_handler import get_comments
 
 
@@ -20,35 +24,45 @@ def analysis_view(request):
         if video_url is None or not video_url.startswith('https://www.youtube.com/watch?v='):
             return render(request, 'main.html')
         else:
-            comments, channel_name = get_comments(video_url)
-            # Convert the comments dictionary to a list of tuples and sort it by comment time
-            sorted_comments = sorted(comments.items(),
-                                     key=lambda item: datetime.strptime(item[1]['comment_time'], "%Y-%m-%dT%H:%M:%S%z"))
-            sentiments_over_time = {}
-            positive = 0
-            all = 0
-            for comment_id, comment_data in sorted_comments:
-                all += 1
-                comment = comment_data['comment']
-                comment_time = comment_data['comment_time']
-                result = predict_sentiment(comment)
-                timestamp = datetime.strptime(comment_time, "%Y-%m-%dT%H:%M:%S%z")
-                timestamp = timestamp.replace(minute=0, second=0)
-                if result == 1:
-                    positive += 1
-                sentiment = positive / all
-                sentiments_over_time[timestamp] = sentiment
+            comments, channel_data = get_comments(video_url)
+            sentiments_over_time, stats = video_sentiment(comments)
+            graphic = sentiment_plot(sentiments_over_time)
 
-            negative = len(comments) - positive
-            num_comments = len(comments)
-            rating = f"{positive / len(comments) * 100} %"
-            stats = {
-                'num_comments': num_comments,
-                'positive': positive,
-                'negative': negative,
-                'rating': rating
-            }
-            graphic = sentiment_over_time(sentiments_over_time)
+            try:
+                creator = Creator.objects.get(channel_id=channel_data['channel_id'])
+            except Creator.DoesNotExist:
+                try:
+                    creator = Creator(channel_id=channel_data['channel_id'],
+                                      channel_name=channel_data['channel_name'],
+                                      picture_url=channel_data['channel_picture_url'])
+                    creator.full_clean()
+                    creator.save()
+
+                except ValidationError:
+                    return HttpResponseBadRequest(render(request, 'error_page.html', {'error_code': 400}))
+
+            try:
+                video = Video.objects.get(video_id=channel_data['video_id'])
+                video.channel = creator
+                video.url = video_url
+                video.title = channel_data['vido_title']
+                video.time_published = channel_data['published_time']
+                video.num_comments = stats['num_comments']
+                video.positive = stats['positive']
+                video.negative = stats['negative']
+                video.rating = stats['rating']
+                video.save()
+
+            except Video.DoesNotExist:
+                try:
+                    video = Video(video_id=channel_data['video_id'], channel=creator, url=video_url,
+                                  title=channel_data['vido_title'], time_published=channel_data['published_time'],
+                                  num_comments=stats['num_comments'], positive=stats['positive'],
+                                  negative=stats['negative'], rating=stats['rating'])
+                    video.full_clean()
+                    video.save()
+                except ValidationError:
+                    return HttpResponseBadRequest(render(request, 'error_page.html', {'error_code': 400}))
 
             return render(request, 'analysis.html',
                           context={'url': video_url, 'stats': stats, 'plot': graphic})

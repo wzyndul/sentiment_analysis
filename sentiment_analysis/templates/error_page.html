@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block header %}{% endblock %}
+{% block content %}
+    <div class="alert alert-danger mt-5" role="alert" style="font-size: 100px;">
+        <h4 class="alert-heading">Error</h4>
+        <p>{{ error_code }}</p>
+    </div>
+{% endblock %}

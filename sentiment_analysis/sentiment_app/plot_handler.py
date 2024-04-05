@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 import matplotlib.dates as mdates
 
 
-def sentiment_over_time(data):
+def sentiment_plot(data):
     plt.figure(dpi=100)
     plt.plot(data.keys(), data.values())
 
