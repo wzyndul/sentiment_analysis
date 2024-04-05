@@ -3,6 +3,8 @@ from datetime import datetime
 import matplotlib.dates as mdates
 from django.contrib import messages
 from django.core.exceptions import ValidationError
+from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import HttpResponseBadRequest
 from django.shortcuts import render
 from matplotlib import pyplot as plt
@@ -66,3 +68,22 @@ def analysis_view(request):
 
             return render(request, 'analysis.html',
                           context={'url': video_url, 'stats': stats, 'plot': graphic})
+
+
+def creators_view(request):
+    search_query = request.GET.get('search', '')
+    creators_list = Creator.objects.filter(Q(channel_name__icontains=search_query)).order_by('channel_name')
+    paginator = Paginator(creators_list, 20)
+
+    page_number = request.GET.get('page')
+    creators = paginator.get_page(page_number)
+
+    return render(request, 'creators.html', {'creators': creators})
+
+
+def channel_view(request):
+    pass
+
+
+def video_view(request):
+    pass

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Creators{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <form method="get" action="" class="mb-3">
+            <div class="form-group">
+                <input type="text" class="form-control" name="search" placeholder="Search creators"
+                       value="{{ request.GET.search }}">
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+        {% for creator in creators %}
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <img class="card-img-top" src="{{ creator.picture_url }}" alt="{{ creator.channel_name }}"
+                         style="width: 50px; height: 50px;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ creator.channel_name }}</h5>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>No creators found.</p>
+        {% endfor %}
+        <div class="pagination">
+            <span class="step-links">
+                {% if creators.has_previous %}
+                    <a href="?page=1&search={{ request.GET.search }}">first</a>
+                    <a href="?page={{ creators.previous_page_number }}&search={{ request.GET.search }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ creators.number }} of {{ creators.paginator.num_pages }}.
+                </span>
+
+                {% if creators.has_next %}
+                    <a href="?page={{ creators.next_page_number }}&search={{ request.GET.search }}">next</a>
+                    <a href="?page={{ creators.paginator.num_pages }}&search={{ request.GET.search }}">last</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+{% endblock %}
