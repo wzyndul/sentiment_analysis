@@ -91,5 +91,8 @@ def channel_view(request, channel_id):
     videos = paginator.get_page(page_number)
 
     return render(request, 'channel.html', {'creator': creator, 'videos': videos})
-def video_view(request):
-    pass
+
+
+def video_view(request, video_id):
+    video = get_object_or_404(Video, video_id=video_id)
+    return render(request, 'video.html', {'video': video})

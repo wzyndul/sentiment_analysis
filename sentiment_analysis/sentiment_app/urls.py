@@ -8,5 +8,6 @@ urlpatterns = [
     path('analyse/', views.analysis_view, name='analysis_view'),
     path('creators/', views.creators_view, name='creators_view'),
     path('channel/<str:channel_id>/', views.channel_view, name='channel_view'),
+    path('video/<str:video_id>/', views.video_view, name='video_view'),
 
 ]

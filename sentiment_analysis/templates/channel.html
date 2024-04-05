@@ -16,6 +16,7 @@
     {% for video in videos %}
         <div>
             <h2><a href="{{ video.url }}">{{ video.title }}</a></h2>
+            <h2><a href="{% url 'video_view' video.video_id %}"> open video page</a></h2>
             <p>Published on: {{ video.time_published }}</p>
         </div>
     {% empty %}
