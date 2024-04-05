@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ creator.channel_name }}{% endblock %}
+{% block header %}{% endblock %}
+
+{% block content %}
+    <h1>{{ creator.channel_name }}</h1>
+    <img src="{{ creator.picture_url }}" alt="{{ creator.channel_name }}" style="width: 100px; height: 100px;">
+    <form method="get" action="" class="mb-3">
+        <div class="form-group">
+            <input type="text" class="form-control" name="search" placeholder="Search videos"
+                   value="{{ request.GET.search }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+    {% for video in videos %}
+        <div>
+            <h2><a href="{{ video.url }}">{{ video.title }}</a></h2>
+            <p>Published on: {{ video.time_published }}</p>
+        </div>
+    {% empty %}
+        <p>No videos found.</p>
+    {% endfor %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if videos.has_previous %}
+                <a href="?page=1&search={{ request.GET.search }}">first</a>
+                <a href="?page={{ videos.previous_page_number }}&search={{ request.GET.search }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ videos.number }} of {{ videos.paginator.num_pages }}.
+            </span>
+
+            {% if videos.has_next %}
+                <a href="?page={{ videos.next_page_number }}&search={{ request.GET.search }}">next</a>
+                <a href="?page={{ videos.paginator.num_pages }}&search={{ request.GET.search }}">last</a>
+            {% endif %}
+        </span>
+    </div>
+{% endblock %}

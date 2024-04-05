@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponseBadRequest
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from matplotlib import pyplot as plt
 
 from sentiment_app.models import Video, Creator
@@ -73,7 +73,7 @@ def analysis_view(request):
 def creators_view(request):
     search_query = request.GET.get('search', '')
     creators_list = Creator.objects.filter(Q(channel_name__icontains=search_query)).order_by('channel_name')
-    paginator = Paginator(creators_list, 20)
+    paginator = Paginator(creators_list, 5)
 
     page_number = request.GET.get('page')
     creators = paginator.get_page(page_number)
@@ -81,9 +81,15 @@ def creators_view(request):
     return render(request, 'creators.html', {'creators': creators})
 
 
-def channel_view(request):
-    pass
+def channel_view(request, channel_id):
+    creator = get_object_or_404(Creator, channel_id=channel_id)
+    search_query = request.GET.get('search', '')
+    video_list = creator.video_set.filter(title__icontains=search_query).order_by('-time_published')
+    paginator = Paginator(video_list, 20)
 
+    page_number = request.GET.get('page')
+    videos = paginator.get_page(page_number)
 
+    return render(request, 'channel.html', {'creator': creator, 'videos': videos})
 def video_view(request):
     pass
