@@ -49,4 +49,7 @@ def sentiment_plot(data):
     buffer.seek(0)
     plot_data = base64.b64encode(buffer.read()).decode('utf-8')
     buffer.close()
+
+
+
     return plot_data
