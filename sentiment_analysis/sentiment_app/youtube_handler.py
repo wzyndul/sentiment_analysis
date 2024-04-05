@@ -5,8 +5,32 @@ from googleapiclient.discovery import build
 
 
 def get_video_comments(video_id, youtube):
+    video_data = {}
+
+    video_response = youtube.videos().list(
+        part="snippet",
+        id=video_id
+    ).execute()
+    channel_id = video_response['items'][0]['snippet']['channelId']
+    channel_name = video_response['items'][0]['snippet']['channelTitle']
+    published_time = video_response['items'][0]['snippet']['publishedAt']
+    vido_title = video_response['items'][0]['snippet']['title']
+
+    channel_response = youtube.channels().list(
+        part="snippet",
+        id=channel_id
+    ).execute()
+    channel_picture_url = channel_response['items'][0]['snippet']['thumbnails']['default']['url']
+
+
+    video_data['channel_id'] = channel_id
+    video_data['channel_name'] = channel_name
+    video_data['published_time'] = published_time
+    video_data['vido_title'] = vido_title
+    video_data['channel_picture_url'] = channel_picture_url
+
     nextPageToken = None
-    comments = []
+    comments = {}
     while True:
         response = youtube.commentThreads().list(
             part="snippet",
@@ -17,12 +41,16 @@ def get_video_comments(video_id, youtube):
 
         for item in response['items']:
             comment = item['snippet']['topLevelComment']['snippet']['textDisplay']
-            comments.append(comment)
+            comment_time = item['snippet']['topLevelComment']['snippet']['publishedAt']
+            comment_id = item['snippet']['topLevelComment']['id']
+            comments[comment_id] = {'comment': comment, 'comment_time': comment_time}
 
         nextPageToken = response.get('nextPageToken')
         if not nextPageToken:
             break
-    return comments
+    return comments, video_data
+
+
 
 
 def get_comments(youtube_url):
@@ -32,8 +60,8 @@ def get_comments(youtube_url):
     youtube = build('youtube', 'v3', developerKey=api_key)
     video_id = youtube_url.split('v=')[1]
 
-    comments = get_video_comments(video_id, youtube)
-    return comments
+    comments, channel_name = get_video_comments(video_id, youtube)
+    return comments, channel_name
 
 
 
