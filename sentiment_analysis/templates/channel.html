@@ -15,7 +15,9 @@
     </form>
     {% for video in videos %}
         <div>
-            <h2><a href="{{ video.url }}">{{ video.title }}</a></h2>
+            <a href="{{ video.url }}">
+                <img src="{{ video.image_url }}" alt="{{ video.title }}" style="width: 100px; height: 100px;">
+            </a>
             <h2><a href="{% url 'video_view' video.video_id %}"> open video page</a></h2>
             <p>Published on: {{ video.time_published }}</p>
         </div>
