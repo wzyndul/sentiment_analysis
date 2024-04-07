@@ -53,11 +53,13 @@ def analysis_view(request):
                 video.positive = stats['positive']
                 video.negative = stats['negative']
                 video.rating = stats['rating']
+                video.image_url = channel_data['video_thumbnail_url']
                 video.save()
 
             except Video.DoesNotExist:
                 try:
                     video = Video(video_id=channel_data['video_id'], channel=creator, url=video_url,
+                                  image_url=channel_data['video_thumbnail_url'],
                                   title=channel_data['vido_title'], time_published=channel_data['published_time'],
                                   num_comments=stats['num_comments'], positive=stats['positive'],
                                   negative=stats['negative'], rating=stats['rating'])

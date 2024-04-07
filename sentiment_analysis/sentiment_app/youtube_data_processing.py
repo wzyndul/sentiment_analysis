@@ -23,7 +23,10 @@ def video_sentiment(comments):
 
     negative = len(comments) - positive
     num_comments = len(comments)
-    rating = positive / len(comments) * 100
+    if len(comments) == 0:
+        rating = 0
+    else:
+        rating = round(positive / len(comments) * 100, 2)
     stats = {
         'num_comments': num_comments,
         'positive': positive,

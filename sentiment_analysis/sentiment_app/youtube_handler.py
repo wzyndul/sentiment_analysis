@@ -15,6 +15,7 @@ def get_video_comments(video_id, youtube):
     channel_name = video_response['items'][0]['snippet']['channelTitle']
     published_time = video_response['items'][0]['snippet']['publishedAt']
     vido_title = video_response['items'][0]['snippet']['title']
+    video_thumbnail_url = video_response['items'][0]['snippet']['thumbnails']['default']['url']
 
     channel_response = youtube.channels().list(
         part="snippet",
@@ -28,6 +29,9 @@ def get_video_comments(video_id, youtube):
     channel_data['vido_title'] = vido_title
     channel_data['channel_picture_url'] = channel_picture_url
     channel_data['video_id'] = video_id
+    channel_data['video_thumbnail_url'] = video_thumbnail_url
+
+    print(video_thumbnail_url)
 
     nextPageToken = None
     comments = {}
@@ -49,6 +53,17 @@ def get_video_comments(video_id, youtube):
         if not nextPageToken:
             break
     return comments, channel_data
+
+
+def get_comments(youtube_url):
+    load_dotenv()
+    api_key = os.getenv('YOUTUBE_API_KEY')
+    os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+    youtube = build('youtube', 'v3', developerKey=api_key)
+    video_id = youtube_url.split('v=')[1]
+
+    comments, channel_name = get_video_comments(video_id, youtube)
+    return comments, channel_name
 
 
 def get_comments(youtube_url):
