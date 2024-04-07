@@ -8,12 +8,66 @@ from django.db.models import Q
 from django.http import HttpResponseBadRequest, Http404
 from django.shortcuts import render, get_object_or_404
 from matplotlib import pyplot as plt
+from rest_framework import generics, viewsets, status
+from rest_framework.decorators import action, api_view
+from rest_framework.response import Response
 
 from sentiment_app.models import Video, Creator
 from sentiment_app.plot_handler import sentiment_plot
 from sentiment_app.predict import predict_sentiment
+from sentiment_app.serializers import CreatorSerializer, VideoSerializer
 from sentiment_app.youtube_data_processing import video_sentiment
 from sentiment_app.youtube_handler import get_yt_data
+
+
+class CreatorList(viewsets.ReadOnlyModelViewSet):
+    queryset = Creator.objects.all()
+    serializer_class = CreatorSerializer
+
+    def get_queryset(self):
+        search_query = self.request.query_params.get('search', '')
+        return Creator.objects.filter(Q(channel_name__icontains=search_query)).order_by('channel_name')
+
+
+class VideoList(viewsets.ReadOnlyModelViewSet):
+    queryset = Video.objects.all()
+    serializer_class = VideoSerializer
+
+    def get_queryset(
+            self):  # TODO exampel query http://localhost:8000/api/videos/?channel_id=UCLKKvlo0yK8OgWvjCiZQ3sA&search=ROOT%20RIDERS
+        search_query = self.request.query_params.get('search', '')
+        channel_id = self.request.query_params.get('channel_id', None)
+        queryset = Video.objects.filter(Q(title__icontains=search_query)).order_by('-time_published')
+        if channel_id is not None:
+            queryset = queryset.filter(channel__channel_id=channel_id)
+        return queryset
+
+    @action(detail=False, methods=['get'])
+    def plot(self, request, *args, **kwargs):
+        creator_id = request.query_params.get('creator_id', None)
+        all_videos = Video.objects.all().order_by('time_published')
+        if creator_id is not None:
+            all_videos = all_videos.filter(channel__channel_id=creator_id)
+        sentiments_over_time = {video.time_published: video.rating for video in all_videos}
+        graphic = sentiment_plot(sentiments_over_time)
+        return Response({'plot': graphic})
+
+
+@api_view(['POST'])
+def analyse_video(request):
+    video_url = request.data.get('youtube_url')
+    if video_url is None or not video_url.startswith('https://www.youtube.com/watch?v='):
+        return Response({"error": "Invalid URL"}, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        comments, channel_data = get_yt_data(video_url)
+        sentiments_over_time, stats = video_sentiment(comments)
+        graphic = sentiment_plot(sentiments_over_time)
+
+        return Response({
+            'url': video_url,
+            'stats': stats,
+            'plot': graphic
+        })
 
 
 def main_view(request):
@@ -72,6 +126,9 @@ def analysis_view(request):
                           context={'url': video_url, 'stats': stats, 'plot': graphic})
 
 
+
+
+
 def creators_view(request):
     search_query = request.GET.get('search', '')
     creators_list = Creator.objects.filter(Q(channel_name__icontains=search_query)).order_by('channel_name')
@@ -87,7 +144,8 @@ def channel_view(request, channel_id):
     try:
         creator = get_object_or_404(Creator, channel_id=channel_id)
     except Http404:
-        return HttpResponseBadRequest(render(request, 'error_page.html', {'error_code': 404, 'error_message': 'Creator not found'}))
+        return HttpResponseBadRequest(
+            render(request, 'error_page.html', {'error_code': 404, 'error_message': 'Creator not found'}))
 
     all_videos = creator.video_set.all().order_by('time_published')
     sentiments_over_time = {video.time_published: video.rating for video in all_videos}
@@ -107,5 +165,6 @@ def video_view(request, video_id):
     try:
         video = get_object_or_404(Video, video_id=video_id)
     except Http404:
-        return HttpResponseBadRequest(render(request, 'error_page.html', {'error_code': 404, 'error_message': 'Video not found'}))
+        return HttpResponseBadRequest(
+            render(request, 'error_page.html', {'error_code': 404, 'error_message': 'Video not found'}))
     return render(request, 'video.html', {'video': video})
