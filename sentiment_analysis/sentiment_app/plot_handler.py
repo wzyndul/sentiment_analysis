@@ -7,7 +7,10 @@ import matplotlib.dates as mdates
 
 def sentiment_plot(data):
     plt.figure(dpi=100)
-    plt.plot(data.keys(), data.values())
+    if len(data) == 1:
+        plt.plot(data.keys(), data.values(), marker='o')
+    else:
+        plt.plot(data.keys(), data.values())
 
     keys = list(data.keys())
     time_range = keys[-1] - keys[0]  # time_range return days and seconds between the first and last date

@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, Http404
 from django.shortcuts import render, get_object_or_404
 from matplotlib import pyplot as plt
 
@@ -13,7 +13,7 @@ from sentiment_app.models import Video, Creator
 from sentiment_app.plot_handler import sentiment_plot
 from sentiment_app.predict import predict_sentiment
 from sentiment_app.youtube_data_processing import video_sentiment
-from sentiment_app.youtube_handler import get_comments
+from sentiment_app.youtube_handler import get_yt_data
 
 
 def main_view(request):
@@ -26,7 +26,7 @@ def analysis_view(request):
         if video_url is None or not video_url.startswith('https://www.youtube.com/watch?v='):
             return render(request, 'main.html')
         else:
-            comments, channel_data = get_comments(video_url)
+            comments, channel_data = get_yt_data(video_url)
             sentiments_over_time, stats = video_sentiment(comments)
             graphic = sentiment_plot(sentiments_over_time)
 
@@ -84,7 +84,15 @@ def creators_view(request):
 
 
 def channel_view(request, channel_id):
-    creator = get_object_or_404(Creator, channel_id=channel_id)
+    try:
+        creator = get_object_or_404(Creator, channel_id=channel_id)
+    except Http404:
+        return HttpResponseBadRequest(render(request, 'error_page.html', {'error_code': 404, 'error_message': 'Creator not found'}))
+
+    all_videos = creator.video_set.all().order_by('time_published')
+    sentiments_over_time = {video.time_published: video.rating for video in all_videos}
+    graphic = sentiment_plot(sentiments_over_time)
+
     search_query = request.GET.get('search', '')
     video_list = creator.video_set.filter(title__icontains=search_query).order_by('-time_published')
     paginator = Paginator(video_list, 20)
@@ -92,9 +100,12 @@ def channel_view(request, channel_id):
     page_number = request.GET.get('page')
     videos = paginator.get_page(page_number)
 
-    return render(request, 'channel.html', {'creator': creator, 'videos': videos})
+    return render(request, 'channel.html', {'creator': creator, 'videos': videos, 'plot': graphic})
 
 
 def video_view(request, video_id):
-    video = get_object_or_404(Video, video_id=video_id)
+    try:
+        video = get_object_or_404(Video, video_id=video_id)
+    except Http404:
+        return HttpResponseBadRequest(render(request, 'error_page.html', {'error_code': 404, 'error_message': 'Video not found'}))
     return render(request, 'video.html', {'video': video})

@@ -6,6 +6,7 @@
 {% block content %}
     <h1>{{ creator.channel_name }}</h1>
     <img src="{{ creator.picture_url }}" alt="{{ creator.channel_name }}" style="width: 100px; height: 100px;">
+    <img src="data:image/png;base64,{{ plot }}" alt="Sentiment over time">
     <form method="get" action="" class="mb-3">
         <div class="form-group">
             <input type="text" class="form-control" name="search" placeholder="Search videos"
