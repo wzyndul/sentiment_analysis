@@ -13,6 +13,7 @@ class Video(models.Model):
     video_id = models.CharField(max_length=50, primary_key=True)
     channel = models.ForeignKey(Creator, on_delete=models.CASCADE)
     url = models.URLField()
+    image_url = models.URLField()
     title = models.CharField(max_length=100)
     time_published = models.DateTimeField()
     num_comments = models.IntegerField()
