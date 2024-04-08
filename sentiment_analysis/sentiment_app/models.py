@@ -14,6 +14,7 @@ class Video(models.Model):
     channel = models.ForeignKey(Creator, on_delete=models.CASCADE)
     url = models.URLField()
     image_url = models.URLField()
+    plot = models.BinaryField(blank=True, null=True)
     title = models.CharField(max_length=100)
     time_published = models.DateTimeField()
     num_comments = models.IntegerField()

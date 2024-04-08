@@ -3,7 +3,7 @@ from datetime import datetime
 from sentiment_app.predict import predict_sentiment
 
 
-def video_sentiment(comments):
+def video_sentiment_preprocess(comments):
     sorted_comments = sorted(comments.items(),
                              key=lambda item: datetime.strptime(item[1]['comment_time'], "%Y-%m-%dT%H:%M:%S%z"))
     sentiments_over_time = {}
