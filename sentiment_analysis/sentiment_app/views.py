@@ -1,21 +1,18 @@
 import base64
-from collections import defaultdict
-from datetime import datetime
-import matplotlib.dates as mdates
-from django.contrib import messages
+
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponseBadRequest, Http404
 from django.shortcuts import render, get_object_or_404
-from matplotlib import pyplot as plt
-from rest_framework import generics, viewsets, status
+
+from rest_framework import  viewsets, status
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 
 from sentiment_app.models import Video, Creator
 from sentiment_app.plot_handler import sentiment_plot
-from sentiment_app.predict import predict_sentiment
+
 from sentiment_app.serializers import CreatorSerializer, VideoSerializer
 from sentiment_app.youtube_data_processing import video_sentiment_preprocess
 from sentiment_app.youtube_handler import get_yt_data
