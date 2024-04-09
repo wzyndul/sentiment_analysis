@@ -138,7 +138,7 @@ def analysis_view(request):
                 video.channel = creator
                 video.url = video_url
                 video.title = channel_data['vido_title']
-                video.plot = graphic,
+                video.plot = graphic
                 video.time_published = channel_data['published_time']
                 video.num_comments = stats['num_comments']
                 video.positive = stats['positive']

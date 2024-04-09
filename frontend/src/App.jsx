@@ -1,38 +1,28 @@
-import { useState, useEffect } from 'react'
-import './App.css'
-
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import MainPage from './pages/MainPage';
+import Creators from './pages/Creators';
+import Channel from './pages/Channel';
+import Video from './pages/Video';
+import VideoAnalysis from './pages/VideoAnalysis';
+import Navbar from './components/Header/Navbar';
+import './App.css';
 
 function App() {
-  const [data, setData] = useState([])
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        console.log(`${import.meta.env.VITE_API_URL}creators/`)
-        const response = await fetch(`${import.meta.env.VITE_API_URL}creators`, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-        if (!response.ok) {
-          throw new Error('Network response was not ok')
-        }
-        const data = await response.json()
-        console.log(data)
-        setData(data)
-      } catch (error) {
-        console.error('There was a problem with your fetch operation:', error)
-      }
-    }
-    fetchData()
-    
-  }, [])
-
-
   return (
-    <>
-      Hello World
-    </>
-  )
+    <div>
+      <Router>
+        <Navbar/>
+        <Routes>
+          <Route path="/" element={<MainPage/>}/>
+          <Route path="/creators" element={<Creators/>}/>
+          <Route path="/channel/:id" element={<Channel/>}/>
+          <Route path="/video/:id" element={<Video/>}/>
+          <Route path="/video-analysis/:id" element={<VideoAnalysis/>}/>
+        </Routes>
+      </Router>
+    </div>
+  );
 }
 
-export default App
+export default App;
