@@ -1,24 +1,24 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import MainPage from './pages/MainPage';
-import Creators from './pages/Creators';
-import Channel from './pages/Channel';
-import Video from './pages/Video';
-import VideoAnalysis from './pages/VideoAnalysis';
+import Main from './pages/MainPage';
+import Creators from './pages/CreatorsPage';
+import Channel from './pages/ChannelPage';
+import Video from './pages/VideoPage';
+import VideoAnalysis from './pages/VideoAnalysisPage';
 import Navbar from './components/Header/Navbar';
 import './App.css';
 
 function App() {
   return (
-    <div>
+    <div className='app'>
       <Router>
         <Navbar/>
         <Routes>
-          <Route path="/" element={<MainPage/>}/>
+          <Route path="/" element={<Main/>}/>
           <Route path="/creators" element={<Creators/>}/>
           <Route path="/channel/:id" element={<Channel/>}/>
           <Route path="/video/:id" element={<Video/>}/>
-          <Route path="/video-analysis/:id" element={<VideoAnalysis/>}/>
+          <Route path="/video-analysis" element={<VideoAnalysis/>}/>
         </Routes>
       </Router>
     </div>

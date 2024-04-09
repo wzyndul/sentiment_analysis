@@ -1,0 +1,1 @@
+// zrobic cos takiego, ze moze filtrowac zaleznie albo video albo channel
