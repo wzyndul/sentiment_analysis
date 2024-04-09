@@ -5,9 +5,7 @@ import {
   CardContent,
   CardMedia,
   Typography,
-  TextField,
   Button,
-  Pagination,
   Grid,
 } from "@mui/material";
 import { styled } from "@mui/system";
@@ -74,7 +72,9 @@ function Creators() {
                   variant="contained"
                   color="primary"
                   component={Link}
-                  to={`/channel_view/${creator.channel_id}`}
+                  to={{
+                    pathname: `/channel/${creator.channel_id}`
+                  }}
                 >
                   View Profile
                 </Button>
