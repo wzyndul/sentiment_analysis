@@ -11,10 +11,16 @@ import {
 import { styled } from "@mui/system";
 import { Link } from "react-router-dom";
 import Filter from "../components/Search/Filter";
+import { useNavigate } from 'react-router-dom';
 
 function Creators() {
+  const navigate = useNavigate();
+  const [creators, setCreators] = useState([]);
+  const [displayedCreators, setDisplayedCreators] = useState([]);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
 
-  const SmallCardMedia = styled(CardMedia)(({ theme }) => ({
+  const RoundCardMedia = styled(CardMedia)(({ theme }) => ({
     height: 50,
     width: 50,
     borderRadius: "50%",
@@ -25,10 +31,10 @@ function Creators() {
     margin: '16px',
   });
 
-  const [creators, setCreators] = useState([]);
-  const [displayedCreators, setDisplayedCreators] = useState([]);
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
+  const StyledGridItem = styled(Grid)(({ theme }) => ({
+    height: '200px', 
+    width: '200px', 
+  }));
 
   useEffect(() => {
     const fetchCreators = async () => {
@@ -57,9 +63,9 @@ function Creators() {
       />
       <Grid container spacing={2}>
         {displayedCreators.map((creator) => (
-          <Grid item xs={3} key={creator.channel_id}>
+          <StyledGridItem item xs={3} key={creator.channel_id}>
             <Card>
-              <SmallCardMedia
+              <RoundCardMedia
                 component="img"
                 image={creator.picture_url}
                 alt={creator.channel_name}
@@ -71,16 +77,13 @@ function Creators() {
                 <Button
                   variant="contained"
                   color="primary"
-                  component={Link}
-                  to={{
-                    pathname: `/channel/${creator.channel_id}`
-                  }}
+                  onClick={() => navigate(`/channel/${creator.channel_id}`, { state: { creator } })}
                 >
                   View Profile
                 </Button>
               </CardContent>
             </Card>
-          </Grid>
+          </StyledGridItem>
         ))}
       </Grid>
       {creators.length === 0 && <Typography>No creators found.</Typography>}
