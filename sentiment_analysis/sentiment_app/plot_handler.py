@@ -51,4 +51,6 @@ def sentiment_plot(data):
     plt.savefig(buffer, format='png')
     plot_data = buffer.getvalue()
     buffer.close()
-    return plot_data
+
+
+    return base64.b64encode(plot_data).decode()

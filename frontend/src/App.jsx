@@ -17,7 +17,7 @@ function App() {
           <Route path="/" element={<Main/>}/>
           <Route path="/creators" element={<Creators/>}/>
           <Route path="/channel/:channel_id" element={<Channel/>}/>
-          <Route path="/video/:id" element={<Video/>}/>
+          <Route path="/video/:video_id" element={<Video/>}/>
           <Route path="/video-analysis" element={<VideoAnalysis/>}/>
         </Routes>
       </Router>

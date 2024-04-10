@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate} from "react-router-dom";
 import Filter from "../components/Search/Filter";
 import {
   Typography,
@@ -8,10 +8,12 @@ import {
   CardMedia,
   Grid,
   Box,
+  Button,
 } from "@mui/material";
 import { styled } from "@mui/system";
 
 const ChannelPage = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const creator = location.state.creator;
   const { channel_id } = useParams();
@@ -19,6 +21,8 @@ const ChannelPage = () => {
   const [displayedVideos, setDisplayedVideos] = useState([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [plotData, setPlotData] = useState([]);
+  const [isHovered, setIsHovered] = useState(false);
 
   const TruncatedTitle = styled(Typography)({
     display: "-webkit-box",
@@ -42,7 +46,6 @@ const ChannelPage = () => {
     height: 120,
     width: 120,
   }));
-
 
   const StyledBox = styled(Box)({
     backgroundColor: "#f5f5f5",
@@ -71,6 +74,18 @@ const ChannelPage = () => {
   }, [channel_id, search]);
 
   useEffect(() => {
+    const fetchPlotData = async () => {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}plot/?creator_id=${channel_id}`
+      );
+      const data = await response.json();
+      setPlotData(data.plot);
+    };
+
+    fetchPlotData();
+  }, [channel_id]);
+
+  useEffect(() => {
     setDisplayedVideos(videos.slice((page - 1) * 16, page * 16));
   }, [videos, page]);
 
@@ -83,7 +98,26 @@ const ChannelPage = () => {
         setPage={setPage}
         totalItems={videos.length}
       />
-      <StyledChannelName variant="h4">{creator.channel_name}</StyledChannelName>
+      <StyledChannelName
+        variant="h4"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {creator.channel_name}
+      </StyledChannelName>
+      {isHovered && (
+        <img
+          src={`data:image/png;base64,${plotData}`}
+          alt="sentiment over time plot"
+          style={{
+            width: "640px",
+            height: "480px",
+            display: "block",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        />
+      )}
       <Typography variant="subtitle1">{creator.url}</Typography>
       <Grid container spacing={2}>
         {displayedVideos.map((video) => (
@@ -108,8 +142,19 @@ const ChannelPage = () => {
                     </Box>
                     <Box style={{ height: "1em" }}>
                       <Typography variant="caption">
-                        Published on: {video.time_published}
+                        Published on: {video.time_published} <br />
                       </Typography>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() =>
+                          navigate(`/video/${video.video_id}`, {
+                            state: { video },
+                          })
+                        }
+                      >
+                        View Profile
+                      </Button>
                     </Box>
                   </CardContent>
                 </Grid>

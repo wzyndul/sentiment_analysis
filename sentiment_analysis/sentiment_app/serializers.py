@@ -5,8 +5,8 @@ from .models import Video, Creator
 class VideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Video
-        fields = ['video_id', 'channel', 'url', 'image_url', 'title', 'time_published', 'num_comments', 'positive',
-                  'negative', 'rating']
+        fields = ['video_id', 'channel', 'url', 'image_url', 'plot', 'title', 'time_published', 'num_comments',
+                  'positive', 'negative', 'rating']
 
 
 class CreatorSerializer(serializers.ModelSerializer):
