@@ -19,13 +19,14 @@ The frontend, developed with React, facilitates user interaction and presents th
 
 <img src=".\img\creators.png" alt="Creators Page" width="100%">
 
-<p> Creators Page: statistics for all creators videos are displayed when user hold mouse cursor at channel name</p>
-
-<img src=".\img\creator_plot.png" alt="Creator Plot" width="100%">
-
 <p> Videos Page: user can filter videos, watch them after clicking thumbnail pticture and enter video for analysis results</p>
 
 <img src=".\img\videos.png" alt="Videos Page" width="100%">
+
+<p> Videos Page: statistics for all creators videos are displayed when user hold mouse cursor at channel name</p>
+
+<img src=".\img\creator_plot.png" alt="Creator Plot" width="100%">
+
 
 
 <h2>🧐 Features</h2>
