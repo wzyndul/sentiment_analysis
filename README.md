@@ -8,7 +8,7 @@ The frontend, developed with React, facilitates user interaction and presents th
 
 
 
-<p> Main Page: user can  paste URL to the YouTube video to analyse</p>
+<p> Main Page: user can  paste URL to the YouTube video to analyse it</p>
 <img src=".\img\main.png" alt="Main Page" width="100%">
 
 <p>Results Page: results of the analysis</p>
