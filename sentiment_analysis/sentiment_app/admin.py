@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from sentiment_app.models import Video, Creator
+
+admin.site.register(Video)
+admin.site.register(Creator)
