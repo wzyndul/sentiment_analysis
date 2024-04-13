@@ -4,14 +4,28 @@
   
 By integrating with the YouTube API, users can input a video URL, which triggers the backend to scrape comments. These comments are then analyzed using the RNN-based sentiment analysis model.
 
-The frontend, developed with React, facilitates user interaction and presents the sentiment analysis results in an intuitive interface. This comprehensive solution offers users a seamless experience for extracting insights from YouTube video comments through sentiment analysis</p>    
+The frontend, developed with React, facilitates user interaction and presents the sentiment analysis results in an intuitive interface. This comprehensive solution offers users a seamless experience for extracting insights from YouTube video comments through sentiment analysis</p>   
 
 
+
+<p> Main Page: user can  paste URL to the YouTube video to analyse</p>
 <img src=".\img\main.png" alt="Main Page" width="100%">
+
+<p>Results Page: results of the analysis</p>
+
 <img src=".\img\plot.png" alt="Plot" width="100%">
+
+<p> Creators Page: user can filter creators and enter their's profiles</p>
+
 <img src=".\img\creators.png" alt="Creators Page" width="100%">
-<img src=".\img\videos.png" alt="Videos Page" width="100%">
+
+<p> Creators Page: statistics for all creators videos are displayed when user hold mouse cursor at channel name</p>
+
 <img src=".\img\creator_plot.png" alt="Creator Plot" width="100%">
+
+<p> Videos Page: user can filter videos, watch them after clicking thumbnail pticture and enter video for analysis results</p>
+
+<img src=".\img\videos.png" alt="Videos Page" width="100%">
 
 
 <h2>🧐 Features</h2>
