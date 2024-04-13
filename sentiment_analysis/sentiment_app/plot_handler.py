@@ -49,10 +49,8 @@ def sentiment_plot(data):
 
     buffer = io.BytesIO()
     plt.savefig(buffer, format='png')
-    buffer.seek(0)
-    plot_data = base64.b64encode(buffer.read()).decode('utf-8')
+    plot_data = buffer.getvalue()
     buffer.close()
 
 
-
-    return plot_data
+    return base64.b64encode(plot_data).decode()

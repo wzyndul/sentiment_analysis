@@ -1,9 +1,7 @@
 import json
-import statistics
 import pandas as pd
 import torch
 import torch.nn as nn
-from matplotlib import pyplot as plt
 
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
