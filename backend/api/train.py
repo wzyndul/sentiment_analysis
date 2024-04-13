@@ -14,9 +14,6 @@ from sklearn.model_selection import train_test_split
 from api.sentiment_rnn import SentimentRNN
 
 
-# hhttps://www.kaggle.com/datasets/yasserh/twitter-tweets-sentiment-dataset
-# Positive, Negative and Neutral.
-
 class SentimentAnalysis:
     def __init__(self):
         self.tokenizer = get_tokenizer("basic_english")
@@ -39,12 +36,10 @@ class SentimentAnalysis:
         return tokens
 
     def load_data(self):
-        # df = pd.read_csv('200k.csv', encoding='ISO-8859-1')
         df = pd.read_csv('data/Tweets.csv')
         df['text'] = df['text'].apply(lambda x: " ".join(x.lower() for x in x.split()))
         x = df['text']
         y = df['sentiment']
-        # y = df['target']
         x_train, x_test, y_train, y_test = train_test_split(x, y, stratify=y)
         y_train = y_train.map({'positive': 0, 'negative': 1, 'neutral': 2})
         y_test = y_test.map({'positive': 0, 'negative': 1, 'neutral': 2})
@@ -67,16 +62,6 @@ class SentimentAnalysis:
             seq) < self.max_seq_length else seq[:self.max_seq_length] for seq in x_train_indices]
         x_test_padded = [seq[:self.max_seq_length] + [0] * (self.max_seq_length - len(seq)) if len(
             seq) < self.max_seq_length else seq[:self.max_seq_length] for seq in x_test_indices]
-
-        # seq_len = [len(i) for i in x_train_indices]
-
-        # max_length = max(seq_len)
-        # mean_length = statistics.mean(seq_len)
-        # median_length = statistics.median(seq_len)
-
-        # print(f"Max length: {max_length}")
-        # print(f"Mean length: {mean_length}")
-        # print(f"Median length: {median_length}")
 
         x_train_tensor = torch.tensor(x_train_padded)
         x_test_tensor = torch.tensor(x_test_padded)

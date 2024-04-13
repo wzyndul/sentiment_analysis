@@ -1,0 +1,1 @@
+To train model I used: https://www.kaggle.com/datasets/yasserh/twitter-tweets-sentiment-dataset
