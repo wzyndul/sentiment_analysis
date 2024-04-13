@@ -1,49 +1,75 @@
-import * as React from 'react';
-import { styled } from '@mui/system';
-import { Box, Card, CardContent, Button, TextField, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+import React, { useState } from "react";
+import { styled } from "@mui/system";
+import {
+  Box,
+  Card,
+  CardContent,
+  Button,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import ErrorDialog from "../components/Error/ErrorDialog";
 
 const CenterBox = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  minHeight: '100vh',
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  minHeight: "100vh",
 }));
 
 const CardBox = styled(Box)(({ theme }) => ({
-  width: '50%',
+  width: "50%",
 }));
 
 const CenterText = styled(Box)(({ theme }) => ({
-  textAlign: 'center',
+  textAlign: "center",
 }));
 
 export default function MainPage() {
   const navigate = useNavigate();
-  const [youtubeUrl, setYoutubeUrl] = React.useState('');
+  const [youtubeUrl, setYoutubeUrl] = React.useState("");
+  const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);
+
+  const handleError = (errorMessage) => {
+    setError(errorMessage);
+    setOpen(true);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const response = await fetch(`${import.meta.env.VITE_API_URL}analysis/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ youtube_url: youtubeUrl }),
-    });
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}analysis/`,
+        { youtube_url: youtubeUrl },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-    const data = await response.json();
-
-
-    navigate('/video-analysis', { state: { data: data, url: youtubeUrl } });
+      const data = response.data;
+      navigate("/video-analysis", { state: { data: data, url: youtubeUrl } });
+    } catch (error) {
+      handleError(
+        "Error occurred while analyzing video, check the URL or try again later."
+      );
+    }
   };
-
 
   return (
     <CenterBox>
       <CardBox>
         <Card>
+          <ErrorDialog
+            open={open}
+            handleClose={() => setOpen(false)}
+            error={error}
+          />
           <CardContent>
             <CenterText>
               <Typography variant="h5" gutterBottom>
@@ -72,4 +98,4 @@ export default function MainPage() {
       </CardBox>
     </CenterBox>
   );
-};
+}

@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Filter from "../components/Search/Filter";
+import ErrorDialog from "../components/Error/ErrorDialog";
 import {
   Typography,
   Card,
@@ -24,6 +25,8 @@ const ChannelPage = () => {
   const [page, setPage] = useState(1);
   const [plotData, setPlotData] = useState([]);
   const [isHovered, setIsHovered] = useState(false);
+  const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);
 
   const TruncatedTitle = styled(Typography)({
     display: "-webkit-box",
@@ -60,6 +63,11 @@ const ChannelPage = () => {
     height: "120px",
   });
 
+  const handleError = (errorMessage) => {
+    setError(errorMessage);
+    setOpen(true);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -70,7 +78,7 @@ const ChannelPage = () => {
         );
         setVideos(response.data);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        handleError("Error fetching data");
       }
     };
 
@@ -85,7 +93,7 @@ const ChannelPage = () => {
         );
         setPlotData(response.data.plot);
       } catch (error) {
-        console.error("Error fetching plot data:", error);
+        handleError("Error fetching data");
       }
     };
 
@@ -98,6 +106,11 @@ const ChannelPage = () => {
 
   return (
     <StyledBox>
+      <ErrorDialog
+        open={open}
+        handleClose={() => setOpen(false)}
+        error={error}
+      />
       <Filter
         search={search}
         setSearch={setSearch}
