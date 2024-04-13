@@ -7,6 +7,13 @@ By integrating with the YouTube API, users can input a video URL, which triggers
 The frontend, developed with React, facilitates user interaction and presents the sentiment analysis results in an intuitive interface. This comprehensive solution offers users a seamless experience for extracting insights from YouTube video comments through sentiment analysis</p>    
 
 
+<img src=".\img\main.png" alt="Main Page" width="100%">
+<img src=".\img\plot.png" alt="Plot" width="100%">
+<img src=".\img\creators.png" alt="Creators Page" width="100%">
+<img src=".\img\videos.png" alt="Videos Page" width="100%">
+<img src=".\img\creator_plot.png" alt="Creator Plot" width="100%">
+
+
 <h2>🧐 Features</h2>
 
 Here're some of the project's best features:
