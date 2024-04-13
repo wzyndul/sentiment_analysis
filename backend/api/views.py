@@ -10,12 +10,12 @@ from rest_framework import  viewsets, status
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 
-from sentiment_app.models import Video, Creator
-from sentiment_app.plot_handler import sentiment_plot
+from api.models import Video, Creator
+from api.plot_handler import sentiment_plot
 
-from sentiment_app.serializers import CreatorSerializer, VideoSerializer
-from sentiment_app.youtube_data_processing import video_sentiment_preprocess
-from sentiment_app.youtube_handler import get_yt_data
+from api.serializers import CreatorSerializer, VideoSerializer
+from api.youtube_data_processing import video_sentiment_preprocess
+from api.youtube_handler import get_yt_data
 
 
 class CreatorList(viewsets.ReadOnlyModelViewSet):

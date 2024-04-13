@@ -11,7 +11,7 @@ import string
 from torch.utils.data import TensorDataset, DataLoader
 from sklearn.model_selection import train_test_split
 
-from sentiment_app.sentiment_rnn import SentimentRNN
+from api.sentiment_rnn import SentimentRNN
 
 
 # hhttps://www.kaggle.com/datasets/yasserh/twitter-tweets-sentiment-dataset

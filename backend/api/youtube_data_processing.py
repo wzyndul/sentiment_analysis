@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sentiment_app.predict import predict_sentiment
+from api.predict import predict_sentiment
 
 
 def video_sentiment_preprocess(comments):

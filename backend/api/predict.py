@@ -6,11 +6,11 @@ from nltk import PorterStemmer
 from nltk.corpus import stopwords
 from torchtext.data import get_tokenizer
 
-from sentiment_app.sentiment_rnn import SentimentRNN
+from api.sentiment_rnn import SentimentRNN
 
 MAX_SEQ_LENGTH = 10
-MODEL_PATH = 'sentiment_app/data/sentiment_model.pth'
-VOCAB_PATH = 'sentiment_app/data/vocab.json'
+MODEL_PATH = 'api/data/sentiment_model.pth'
+VOCAB_PATH = 'api/data/vocab.json'
 
 model_info = torch.load(MODEL_PATH)
 input_size = model_info['input_size']

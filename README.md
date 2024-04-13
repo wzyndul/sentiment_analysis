@@ -78,3 +78,5 @@ Backend:
 ```
 python manage.py runserver
 ```
+
+Also in .env file you have to provide YOUTUBE_API_KEY and VITE_API_URL
