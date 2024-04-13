@@ -156,7 +156,7 @@ const ChannelPage = () => {
                             })
                           }
                         >
-                          View Profile
+                          View Video Details
                         </Button>
                       </Box>
                     </CardContent>
