@@ -1,4 +1,4 @@
-<h1 align="center" id="title">Sentiment Abalysis App</h1>
+<h1 align="center" id="title">Sentiment Analysis App</h1>
 
 <p id="description">This project harnesses the combined capabilities of Django, React, and a sentiment analysis model based on Recurrent Neural Networks (RNNs).
   
