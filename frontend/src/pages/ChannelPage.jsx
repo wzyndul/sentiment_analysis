@@ -24,6 +24,8 @@ const ChannelPage = () => {
   const [plotData, setPlotData] = useState([]);
   const [isHovered, setIsHovered] = useState(false);
 
+  
+
   const TruncatedTitle = styled(Typography)({
     display: "-webkit-box",
     WebkitLineClamp: 2,
@@ -48,7 +50,7 @@ const ChannelPage = () => {
   }));
 
   const StyledBox = styled(Box)({
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#282c34",
     minHeight: "100vh",
   });
 
@@ -89,82 +91,83 @@ const ChannelPage = () => {
     setDisplayedVideos(videos.slice((page - 1) * 16, page * 16));
   }, [videos, page]);
 
+
   return (
-    <StyledBox>
-      <Filter
-        search={search}
-        setSearch={setSearch}
-        page={page}
-        setPage={setPage}
-        totalItems={videos.length}
-      />
-      <StyledChannelName
-        variant="h4"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        {creator.channel_name}
-      </StyledChannelName>
-      {isHovered && (
-        <img
-          src={`data:image/png;base64,${plotData}`}
-          alt="sentiment over time plot"
-          style={{
-            width: "640px",
-            height: "480px",
-            display: "block",
-            marginLeft: "auto",
-            marginRight: "auto",
-          }}
+      <StyledBox>
+        <Filter
+          search={search}
+          setSearch={setSearch}
+          page={page}
+          setPage={setPage}
+          totalItems={videos.length}
         />
-      )}
-      <Typography variant="subtitle1">{creator.url}</Typography>
-      <Grid container spacing={2}>
-        {displayedVideos.map((video) => (
-          <Grid item xs={3} key={video.id}>
-            <StyledCard>
-              <Grid container>
-                <Grid item xs={4}>
-                  <a href={video.url}>
-                    <SmallCardMedia
-                      component="img"
-                      image={video.image_url}
-                      alt={video.title}
-                    />
-                  </a>
+        <StyledChannelName
+          variant="h4"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {creator.channel_name}
+        </StyledChannelName>
+        {isHovered && (
+          <img
+            src={`data:image/png;base64,${plotData}`}
+            alt="sentiment over time plot"
+            style={{
+              width: "640px",
+              height: "480px",
+              display: "block",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+          />
+        )}
+        <Typography variant="subtitle1">{creator.url}</Typography>
+        <Grid container spacing={2}>
+          {displayedVideos.map((video) => (
+            <Grid item xs={3} key={video.id}>
+              <StyledCard>
+                <Grid container>
+                  <Grid item xs={4}>
+                    <a href={video.url}>
+                      <SmallCardMedia
+                        component="img"
+                        image={video.image_url}
+                        alt={video.title}
+                      />
+                    </a>
+                  </Grid>
+                  <Grid item xs={8}>
+                    <CardContent>
+                      <Box style={{ height: "3em", overflow: "hidden" }}>
+                        <TruncatedTitle variant="body1" gutterBottom>
+                          {video.title}
+                        </TruncatedTitle>
+                      </Box>
+                      <Box style={{ height: "1em" }}>
+                        <Typography variant="caption">
+                          Published on: {video.time_published} <br />
+                        </Typography>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() =>
+                            navigate(`/video/${video.video_id}`, {
+                              state: { video },
+                            })
+                          }
+                        >
+                          View Profile
+                        </Button>
+                      </Box>
+                    </CardContent>
+                  </Grid>
                 </Grid>
-                <Grid item xs={8}>
-                  <CardContent>
-                    <Box style={{ height: "3em", overflow: "hidden" }}>
-                      <TruncatedTitle variant="body1" gutterBottom>
-                        {video.title}
-                      </TruncatedTitle>
-                    </Box>
-                    <Box style={{ height: "1em" }}>
-                      <Typography variant="caption">
-                        Published on: {video.time_published} <br />
-                      </Typography>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() =>
-                          navigate(`/video/${video.video_id}`, {
-                            state: { video },
-                          })
-                        }
-                      >
-                        View Profile
-                      </Button>
-                    </Box>
-                  </CardContent>
-                </Grid>
-              </Grid>
-            </StyledCard>
-          </Grid>
-        ))}
-      </Grid>
-      {videos.length === 0 && <Typography>No videos found.</Typography>}
-    </StyledBox>
+              </StyledCard>
+            </Grid>
+          ))}
+        </Grid>
+        {videos.length === 0 && <Typography>No videos found.</Typography>}
+      </StyledBox>
   );
 };
 

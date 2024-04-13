@@ -19,6 +19,8 @@ function Creators() {
   const [displayedCreators, setDisplayedCreators] = useState([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [triggerFetch, setTriggerFetch] = useState(false); 
+  
 
   const RoundCardMedia = styled(CardMedia)(({ theme }) => ({
     height: 50,
@@ -29,6 +31,7 @@ function Creators() {
   const StyledBox = styled(Box)({
     flexGrow: 1,
     margin: '16px',
+    minHeight: "100vh",
   });
 
   const StyledGridItem = styled(Grid)(({ theme }) => ({
@@ -44,9 +47,8 @@ function Creators() {
       const data = await response.json();
       setCreators(data);
     };
-
     fetchCreators();
-  }, [search]);
+  }, [search, triggerFetch]);
 
   useEffect(() => {
     setDisplayedCreators(creators.slice((page - 1) * 16, page * 16));
