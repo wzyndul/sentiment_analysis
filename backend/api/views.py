@@ -32,7 +32,7 @@ class VideoList(viewsets.ReadOnlyModelViewSet):
     serializer_class = VideoSerializer
 
     def get_queryset(
-            self):  # TODO exampel query http://localhost:8000/api/videos/?channel_id=UCLKKvlo0yK8OgWvjCiZQ3sA&search=ROOT%20RIDERS
+            self): 
         search_query = self.request.query_params.get('search', '')
         channel_id = self.request.query_params.get('channel_id', None)
         queryset = Video.objects.filter(Q(title__icontains=search_query)).order_by('-time_published')

@@ -1,5 +1,6 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { useParams, useLocation, useNavigate} from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Filter from "../components/Search/Filter";
 import {
   Typography,
@@ -24,8 +25,6 @@ const ChannelPage = () => {
   const [plotData, setPlotData] = useState([]);
   const [isHovered, setIsHovered] = useState(false);
 
-  
-
   const TruncatedTitle = styled(Typography)({
     display: "-webkit-box",
     WebkitLineClamp: 2,
@@ -44,32 +43,35 @@ const ChannelPage = () => {
     marginBottom: "16px",
   });
 
-  const SmallCardMedia = styled(CardMedia)(({ theme }) => ({
+  const SmallCardMedia = styled(CardMedia)({
     height: 120,
     width: 120,
-  }));
+  });
 
   const StyledBox = styled(Box)({
     backgroundColor: "#282c34",
     minHeight: "100vh",
   });
 
-  const StyledCard = styled(Card)(({ theme }) => ({
+  const StyledCard = styled(Card)({
     boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
     borderRadius: "5px",
     margin: "10px",
     height: "120px",
-  }));
+  });
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_API_URL
-        }videos/?channel_id=${channel_id}&search=${search}`
-      );
-      const data = await response.json();
-      setVideos(data);
+      try {
+        const response = await axios.get(
+          `${
+            import.meta.env.VITE_API_URL
+          }videos/?channel_id=${channel_id}&search=${search}`
+        );
+        setVideos(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
 
     fetchData();
@@ -77,11 +79,14 @@ const ChannelPage = () => {
 
   useEffect(() => {
     const fetchPlotData = async () => {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}plot/?creator_id=${channel_id}`
-      );
-      const data = await response.json();
-      setPlotData(data.plot);
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}plot/?creator_id=${channel_id}`
+        );
+        setPlotData(response.data.plot);
+      } catch (error) {
+        console.error("Error fetching plot data:", error);
+      }
     };
 
     fetchPlotData();
@@ -91,83 +96,82 @@ const ChannelPage = () => {
     setDisplayedVideos(videos.slice((page - 1) * 16, page * 16));
   }, [videos, page]);
 
-
   return (
-      <StyledBox>
-        <Filter
-          search={search}
-          setSearch={setSearch}
-          page={page}
-          setPage={setPage}
-          totalItems={videos.length}
+    <StyledBox>
+      <Filter
+        search={search}
+        setSearch={setSearch}
+        page={page}
+        setPage={setPage}
+        totalItems={videos.length}
+      />
+      <StyledChannelName
+        variant="h4"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {creator.channel_name}
+      </StyledChannelName>
+      {isHovered && (
+        <img
+          src={`data:image/png;base64,${plotData}`}
+          alt="sentiment over time plot"
+          style={{
+            width: "640px",
+            height: "480px",
+            display: "block",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
         />
-        <StyledChannelName
-          variant="h4"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          {creator.channel_name}
-        </StyledChannelName>
-        {isHovered && (
-          <img
-            src={`data:image/png;base64,${plotData}`}
-            alt="sentiment over time plot"
-            style={{
-              width: "640px",
-              height: "480px",
-              display: "block",
-              marginLeft: "auto",
-              marginRight: "auto",
-            }}
-          />
-        )}
-        <Typography variant="subtitle1">{creator.url}</Typography>
-        <Grid container spacing={2}>
-          {displayedVideos.map((video) => (
-            <Grid item xs={3} key={video.id}>
-              <StyledCard>
-                <Grid container>
-                  <Grid item xs={4}>
-                    <a href={video.url}>
-                      <SmallCardMedia
-                        component="img"
-                        image={video.image_url}
-                        alt={video.title}
-                      />
-                    </a>
-                  </Grid>
-                  <Grid item xs={8}>
-                    <CardContent>
-                      <Box style={{ height: "3em", overflow: "hidden" }}>
-                        <TruncatedTitle variant="body1" gutterBottom>
-                          {video.title}
-                        </TruncatedTitle>
-                      </Box>
-                      <Box style={{ height: "1em" }}>
-                        <Typography variant="caption">
-                          Published on: {video.time_published} <br />
-                        </Typography>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() =>
-                            navigate(`/video/${video.video_id}`, {
-                              state: { video },
-                            })
-                          }
-                        >
-                          View Video Details
-                        </Button>
-                      </Box>
-                    </CardContent>
-                  </Grid>
+      )}
+      <Typography variant="subtitle1">{creator.url}</Typography>
+      <Grid container spacing={2}>
+        {displayedVideos.map((video) => (
+          <Grid item xs={3} key={video.id}>
+            <StyledCard>
+              <Grid container>
+                <Grid item xs={4}>
+                  <a href={video.url}>
+                    <SmallCardMedia
+                      component="img"
+                      image={video.image_url}
+                      alt={video.title}
+                    />
+                  </a>
                 </Grid>
-              </StyledCard>
-            </Grid>
-          ))}
-        </Grid>
-        {videos.length === 0 && <Typography>No videos found.</Typography>}
-      </StyledBox>
+                <Grid item xs={8}>
+                  <CardContent>
+                    <Box style={{ height: "3em", overflow: "hidden" }}>
+                      <TruncatedTitle variant="body1" gutterBottom>
+                        {video.title}
+                      </TruncatedTitle>
+                    </Box>
+                    <Box style={{ height: "1em" }}>
+                      <Typography variant="caption">
+                        Published on: {video.time_published} <br />
+                      </Typography>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() =>
+                          navigate(`/video/${video.video_id}`, {
+                            state: { video },
+                          })
+                        }
+                      >
+                        View Video Details
+                      </Button>
+                    </Box>
+                  </CardContent>
+                </Grid>
+              </Grid>
+            </StyledCard>
+          </Grid>
+        ))}
+      </Grid>
+      {videos.length === 0 && <Typography>No videos found.</Typography>}
+    </StyledBox>
   );
 };
 

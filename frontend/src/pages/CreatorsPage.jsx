@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -9,9 +10,9 @@ import {
   Grid,
 } from "@mui/material";
 import { styled } from "@mui/system";
-import { Link } from "react-router-dom";
 import Filter from "../components/Search/Filter";
-import { useNavigate } from 'react-router-dom';
+import ErrorDialog from "../components/Error/ErrorDialog";
+import { useNavigate } from "react-router-dom";
 
 function Creators() {
   const navigate = useNavigate();
@@ -19,36 +20,45 @@ function Creators() {
   const [displayedCreators, setDisplayedCreators] = useState([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [triggerFetch, setTriggerFetch] = useState(false); 
-  
+  const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);
 
-  const RoundCardMedia = styled(CardMedia)(({ theme }) => ({
+  const RoundCardMedia = styled(CardMedia)({
     height: 50,
     width: 50,
     borderRadius: "50%",
-  }));
+  });
 
   const StyledBox = styled(Box)({
     flexGrow: 1,
-    margin: '16px',
+    margin: "16px",
     minHeight: "100vh",
   });
 
-  const StyledGridItem = styled(Grid)(({ theme }) => ({
-    height: '200px', 
-    width: '200px', 
-  }));
+  const StyledGridItem = styled(Grid)({
+    height: "200px",
+    width: "200px",
+  });
+
+  const handleError = (errorMessage) => {
+    setError(errorMessage);
+    setOpen(true);
+  };
 
   useEffect(() => {
     const fetchCreators = async () => {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}creators/?search=${search}`
-      );
-      const data = await response.json();
-      setCreators(data);
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}creators/?search=${search}`
+        );
+        setCreators(response.data);
+      } catch (error) {
+        handleError("Error fetching creators");
+      }
     };
+
     fetchCreators();
-  }, [search, triggerFetch]);
+  }, [search]);
 
   useEffect(() => {
     setDisplayedCreators(creators.slice((page - 1) * 16, page * 16));
@@ -56,6 +66,11 @@ function Creators() {
 
   return (
     <StyledBox>
+      <ErrorDialog
+        open={open}
+        handleClose={() => setOpen(false)}
+        error={error}
+      />
       <Filter
         search={search}
         setSearch={setSearch}
@@ -79,7 +94,11 @@ function Creators() {
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={() => navigate(`/channel/${creator.channel_id}`, { state: { creator } })}
+                  onClick={() =>
+                    navigate(`/channel/${creator.channel_id}`, {
+                      state: { creator },
+                    })
+                  }
                 >
                   View Profile
                 </Button>

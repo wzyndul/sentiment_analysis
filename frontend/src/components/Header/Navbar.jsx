@@ -1,21 +1,18 @@
-import { styled } from '@mui/system';
-import { AppBar, Toolbar, Typography, Button } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
-
-const StyledAppBar = styled(AppBar)({
-  backgroundColor: '#333',
-});
-
-
+import { AppBar, Toolbar,Button } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 
 function Navbar() {
   return (
-    <StyledAppBar position="static">
+    <AppBar position="static" sx={{ backgroundColor: "#333" }}>
       <Toolbar>
-        <Button color="inherit" component={RouterLink} to="/">Main Page</Button>
-        <Button color="inherit" component={RouterLink} to="/creators">Creators</Button>
+        <Button color="inherit" component={RouterLink} to="/">
+          Main Page
+        </Button>
+        <Button color="inherit" component={RouterLink} to="/creators">
+          Creators
+        </Button>
       </Toolbar>
-    </StyledAppBar>
+    </AppBar>
   );
 }
 
