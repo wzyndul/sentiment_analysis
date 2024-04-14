@@ -1,10 +1,10 @@
 <h1 align="center" id="title">Sentiment Analysis App</h1>
 
-<p id="description">This project harnesses the combined capabilities of Django, React, and a sentiment analysis model based on Recurrent Neural Networks (RNNs).
+<p id="description">This project uses the combined capabilities of Django, React, and a sentiment analysis model based on Recurrent Neural Networks (RNNs).
   
-By integrating with the YouTube API, users can input a video URL, which triggers the backend to scrape comments. These comments are then analyzed using the RNN-based sentiment analysis model.
+By integrating with the YouTube API, users can input a video URL, which triggers the backend (made in Django) to scrape comments. These comments are then analyzed using the RNN-based sentiment analysis model.
 
-The frontend, developed with React, facilitates user interaction and presents the sentiment analysis results in an intuitive interface. This comprehensive solution offers users a seamless experience for extracting insights from YouTube video comments through sentiment analysis</p>   
+Frontend, developed with React, facilitates user interaction and presents the sentiment analysis results in an intuitive interface. This comprehensive solution offers users a seamless experience for extracting insights from YouTube video comments through sentiment analysis</p>   
 
 
 
@@ -15,15 +15,15 @@ The frontend, developed with React, facilitates user interaction and presents th
 
 <img src=".\img\plot.png" alt="Plot" width="100%">
 
-<p> Creators Page: user can filter creators and enter their's profiles</p>
+<p> Creators Page: user can filter creators and enter their profiles</p>
 
 <img src=".\img\creators.png" alt="Creators Page" width="100%">
 
-<p> Videos Page: user can filter videos, watch them after clicking thumbnail pticture and enter video for analysis results</p>
+<p> Videos Page: user can filter videos, watch them after clicking thumbnail picture and enter video for analysis results</p>
 
 <img src=".\img\videos.png" alt="Videos Page" width="100%">
 
-<p> Videos Page: statistics for all creators videos are displayed when user hold mouse cursor at channel name</p>
+<p> Videos Page: statistics for all creators videos are displayed when user holds mouse cursor at channel name</p>
 
 <img src=".\img\creator_plot.png" alt="Creator Plot" width="100%">
 
